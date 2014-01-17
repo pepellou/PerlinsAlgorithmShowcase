@@ -17,14 +17,20 @@
         body {
             margin: 0;
             padding: 0;
+            color: black;
         }
-        #texture {
+        .box {
+            border: 1px solid black;
+            background-color: rgba(167, 160, 160, 0.69);
+            padding: 10px 20px;
             position: absolute;
             top: 20px;
+        }
+        #texture {
             left: 20px;
-            border: 1px solid black;
-            background-color: #ccc;
-            padding: 10px 20px;
+        }
+        #hint {
+            right: 20px;
         }
         #slider-opacity, input {
             width: 100%;
@@ -35,6 +41,7 @@
             padding: 5px;
             background-color: #ddd;
             border-radius: 7px;
+            color: #422;
         }
         #buttons {
             margin: 20px 0;
@@ -53,8 +60,8 @@
 <body>
     <script src="https://rawgithub.com/jwagner/simplex-noise.js/master/simplex-noise.js"></script>
     <canvas id="c" width="100%" height="100%" style="width:100%;height:100%;"></canvas>
-    <div id="texture">
-        <h1>Texture</h1>
+    <div id="texture" class="box">
+        <h1>Configuration</h1>
         <table>
             <tr>
                 <td>Background:</td>
@@ -65,17 +72,23 @@
                 <td><input type="text" class="fg-popup" data-color-format="hex"></td>
             </tr>
             <tr>
-                <td>Opacity:</td>
-                <td><input type="text" id="opacity" style="border:0; color:#f6931f; font-weight:bold;"></td>
+                <td>Opacity range:</td>
+                <td><input type="text" class="hide" id="opacity" style="border:0; color:#f6931f; font-weight:bold;"></td>
             </tr>
         </table>
         <div id="slider-opacity"></div>
         <div id="buttons">
+            Presets:
             <a class="texture" data-name="water" href="#">Water</a>
             <a class="texture" data-name="fire" href="#">Fire</a>
-            <a id="hideButton" href="#">Hide</a>
+            <a id="hideButton" href="#">Hide boxes</a>
         </div>
         <a id="githubLink" target="_blank" href="https://github.com/pepellou/PerlinsAlgorithmShowcase">See the project page at Github</a>
+    </div>
+    <div id="hint" class="box">
+        <h1>Hint</h1>
+        Most browsers allow to go fullscreen with some key press (such as
+        F11). Try it!
     </div>
     <script>
         window.requestAnimationFrame = window.requestAnimationFrame ||
@@ -185,7 +198,7 @@
             });
 
             $('#hideButton').click(function () {
-                $('#texture').fadeOut();
+                $('.box').fadeOut();
             });
         });
     </script>
