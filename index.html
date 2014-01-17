@@ -125,6 +125,8 @@
         }
 
         function setTexture(texture) {
+            $(".fg-popup").trigger("colorpickersliders.updateColor", colorToCss(texture.fg));
+            $(".bg-popup").trigger("colorpickersliders.updateColor", colorToCss(texture.bg));
             paint_fg(texture.fg);
             paint_bg(texture.bg);
         }
