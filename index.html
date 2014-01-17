@@ -1,0 +1,179 @@
+<html>
+<head>
+    <title>Perlin's noise</title>
+    <link href="colorpicker/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
+    <link href="colorpicker/libraries/prettify/prettify.css" rel="stylesheet" type="text/css" media="all">
+    <link href="colorpicker/demo.css" rel="stylesheet" type="text/css" media="all">
+    <link href="colorpicker/jquery-colorpickersliders/jquery.colorpickersliders.css" rel="stylesheet" type="text/css" media="all">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+
+    <script src="colorpicker/libraries/jquery-1.9.0.min.js"></script>
+    <script src="colorpicker/bootstrap/js/bootstrap.min.js"></script>
+    <script src="colorpicker/libraries/prettify/prettify.js"></script>
+    <script src="colorpicker/libraries/tinycolor.js"></script>
+    <script src="colorpicker/jquery-colorpickersliders/jquery.colorpickersliders.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #texture {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            border: 1px solid black;
+            background-color: #ccc;
+            padding: 10px 20px;
+        }
+        #slider-opacity, input {
+            width: 100%;
+            margin: 5px 0;
+        }
+        a {
+            border: 1px solid #aaa;
+            padding: 5px;
+            background-color: #ddd;
+            border-radius: 7px;
+        }
+        #buttons {
+            margin: 20px 0;
+        }
+        #hideButton {
+            background-color: #edd;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://rawgithub.com/jwagner/simplex-noise.js/master/simplex-noise.js"></script>
+    <canvas id="c" width="100%" height="100%" style="width:100%;height:100%;"></canvas>
+    <div id="texture">
+        <h1>Texture</h1>
+        <table>
+            <tr>
+                <td>Background:</td>
+                <td><input type="text" class="bg-popup" data-color-format="hex"></td>
+            </tr>
+            <tr>
+                <td>Foreground:</td>
+                <td><input type="text" class="fg-popup" data-color-format="hex"></td>
+            </tr>
+            <tr>
+                <td>Opacity:</td>
+                <td><input type="text" id="opacity" style="border:0; color:#f6931f; font-weight:bold;"></td>
+            </tr>
+        </table>
+        <div id="slider-opacity"></div>
+        <div id="buttons">
+            <a class="texture" data-name="water" href="#">Water</a>
+            <a class="texture" data-name="fire" href="#">Fire</a>
+            <a id="hideButton" href="#">Hide</a>
+        </div>
+    </div>
+    <script>
+        var predefined_textures = {
+            water: {
+                bg: { r: 50, g: 100, b: 200 },
+                fg: { r: 7, g: 28, b: 10 }
+            },
+            fire: {
+                bg: { r: 255, g: 0, b: 0 },
+                fg: { r: 247, g: 228, b: 0 }
+            }
+        };
+
+        var texture = predefined_textures.water;
+
+        var min_opacity = 0.7;
+        var max_opacity = 1;
+
+        var simplex = new SimplexNoise(),
+            canvas = document.getElementById('c'),
+            ctx = canvas.getContext('2d'),
+            imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height),
+            data = imgdata.data,
+            t = 0;
+
+        function colorToCss(color) {
+            return 'rgb(' + color.r + ', ' + color.g + ', ' + color.b + ')';
+        }
+
+        function paint_fg(color) {
+            $('body').css('background-color', colorToCss(color));
+        }
+
+        function paint_bg(color) {
+            for (var x = 0; x < canvas.width; x++) {
+                for (var y = 0; y < canvas.height; y++) {
+                    data[(x + y * canvas.width) * 4 + 0] = color.r;
+                    data[(x + y * canvas.width) * 4 + 1] = color.g;
+                    data[(x + y * canvas.width) * 4 + 2] = color.b;
+                }
+            }
+        }
+
+        function setOpacityBounds(min, max) {
+            $( "#opacity" ).val( "Min: " + min + " | Max: " + max );
+            min_opacity = min / 100;
+            max_opacity = max / 100;
+        }
+
+        function setTexture(texture) {
+            paint_fg(texture.fg);
+            paint_bg(texture.bg);
+        }
+
+        $(function() {
+            paint_fg(texture.bg);
+            paint_bg(texture.fg);
+
+            window.setInterval(function() {
+                for (var x = 0; x < canvas.width; x++) {
+                    for (var y = 0; y < canvas.height; y++) {
+                        var b = simplex.noise3D(x / 8, y / 8, t/128) * (max_opacity - min_opacity) + min_opacity;
+                        var g = simplex.noise3D(x / 2, y / 2, t/64) * (max_opacity - min_opacity) + min_opacity;
+                        data[(x + y * canvas.width) * 4 + 3] = (b * g) * 255;
+                    }
+                }
+               t++;
+               ctx.putImageData(imgdata, 0, 0);
+            }, 1000/60);
+
+            $(".bg-popup").ColorPickerSliders({
+                order: { hsl: 1 },
+                onchange: function(container, color) {
+                    paint_bg(color.rgba);
+                },
+                color: colorToCss(texture.bg)
+            });
+            $(".fg-popup").ColorPickerSliders({
+                order: { hsl: 1 },
+                onchange: function(container, color) {
+                    paint_fg(color.rgba);
+                },
+                color: colorToCss(texture.fg)
+            });
+
+            $( "#slider-opacity" ).slider({
+                orientation: "horizontal",
+                range: true,
+                values: [ 70, 100 ],
+                slide: function( event, ui ) {
+                    setOpacityBounds(ui.values[0], ui.values[1]);
+                }
+            });
+
+            setOpacityBounds($( "#slider-opacity" ).slider( "values", 0), $( "#slider-opacity" ).slider( "values", 1) );
+
+            $('a.texture').click(function () {
+                setTexture(predefined_textures[$(this).data('name')]);
+            });
+
+            $('#hideButton').click(function () {
+                $('#texture').fadeOut();
+            });
+        });
+    </script>
+</body>
+</html>
