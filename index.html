@@ -155,8 +155,8 @@
         <fieldset>
             <label>Hint</label>
             <p>
-                Increase or decrease t steps to respectively accelerate
-                or slow down the noise fluctuations.
+                Increase or decrease t steps to respectively slow down
+                or speed up the noise fluctuations.
             </p>
         </fieldset>
     </div>
@@ -186,8 +186,8 @@
         var min_opacity = 0.7;
         var max_opacity = 1;
 
-        var noise1 = { x_step: 8, y_step: 8, t_step: 128 };
-        var noise2 = { x_step: 2, y_step: 2, t_step: 64 };
+        var noise1 = { x_step: 8, y_step: 8, t_step: 64 };
+        var noise2 = { x_step: 2, y_step: 2, t_step: 16 };
 
         var simplex = new SimplexNoise(),
             canvas = document.getElementById('c'),
@@ -284,13 +284,13 @@
 
             $( "#slider-noise1-xstep" ).slider({
                 min: 1,
-                max: 100,
+                max: 40,
                 value: noise1.x_step,
                 slide: function( event, ui ) { noise1.x_step = ui.value; }
             });
             $( "#slider-noise1-ystep" ).slider({
                 min: 1,
-                max: 100,
+                max: 40,
                 value: noise1.y_step,
                 slide: function( event, ui ) { noise1.y_step = ui.value; }
             });
@@ -303,13 +303,13 @@
 
             $( "#slider-noise2-xstep" ).slider({
                 min: 1,
-                max: 100,
+                max: 40,
                 value: noise2.x_step,
                 slide: function( event, ui ) { noise2.x_step = ui.value; }
             });
             $( "#slider-noise2-ystep" ).slider({
                 min: 1,
-                max: 100,
+                max: 40,
                 value: noise2.y_step,
                 slide: function( event, ui ) { noise2.y_step = ui.value; }
             });
