@@ -21,27 +21,44 @@
         }
         .box {
             border: 1px solid black;
-            background-color: rgba(167, 160, 160, 0.69);
+            background-color: rgba(167, 160, 160, 0.5);
             padding: 10px 20px;
             position: absolute;
-            top: 20px;
+        }
+        fieldset {
+            background-color: rgba(167, 160, 160, 0.2);
+            border: 3px solid rgba(8,8,8,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 18px;
         }
         #texture {
+            top: 20px;
             left: 20px;
         }
         #hint {
+            top: 20px;
             right: 20px;
         }
-        #slider-opacity, input {
+        #credits {
+            right: 20px;
+            bottom: 20px;
+        }
+        .slider, input {
             width: 100%;
             margin: 5px 0;
         }
         a {
-            border: 1px solid #aaa;
-            padding: 5px;
+            color: #422;
+        }
+        .button {
             background-color: #ddd;
             border-radius: 7px;
-            color: #422;
+            border: 1px solid #aaa;
+            padding: 5px;
         }
         #buttons {
             margin: 20px 0;
@@ -53,7 +70,6 @@
         #githubLink {
             background: none;
             border: 0;
-            float: right;
         }
     </style>
 </head>
@@ -61,34 +77,92 @@
     <script src="https://rawgithub.com/jwagner/simplex-noise.js/master/simplex-noise.js"></script>
     <canvas id="c" width="100%" height="100%" style="width:100%;height:100%;"></canvas>
     <div id="texture" class="box">
-        <h1>Configuration</h1>
-        <table>
-            <tr>
-                <td>Background:</td>
-                <td><input type="text" class="bg-popup" data-color-format="hex"></td>
-            </tr>
-            <tr>
-                <td>Foreground:</td>
-                <td><input type="text" class="fg-popup" data-color-format="hex"></td>
-            </tr>
-            <tr>
-                <td>Opacity range:</td>
-                <td><input type="text" class="hide" id="opacity" style="border:0; color:#f6931f; font-weight:bold;"></td>
-            </tr>
-        </table>
-        <div id="slider-opacity"></div>
-        <div id="buttons">
-            Presets:
-            <a class="texture" data-name="water" href="#">Water</a>
-            <a class="texture" data-name="fire" href="#">Fire</a>
-            <a id="hideButton" href="#">Hide boxes</a>
-        </div>
-        <a id="githubLink" target="_blank" href="https://github.com/pepellou/PerlinsAlgorithmShowcase">See the project page at Github</a>
+        <h1>Perlin's Noise Showcase</h1>
+        <fieldset>
+            <label>Texture</label>
+            <table>
+                <tr>
+                    <td>Background:</td>
+                    <td><input type="text" class="bg-popup" data-color-format="hex"></td>
+                </tr>
+                <tr>
+                    <td>Foreground:</td>
+                    <td><input type="text" class="fg-popup" data-color-format="hex"></td>
+                </tr>
+                <tr>
+                    <td>Opacity range:</td>
+                    <td><input type="text" class="hide" id="opacity" style="border:0; color:#f6931f; font-weight:bold;"></td>
+                </tr>
+            </table>
+            <div class="slider" id="slider-opacity"></div>
+            <div id="buttons">
+                Texture presets:
+                <a class="button texture" data-name="water" href="#">Water</a>
+                <a class="button texture" data-name="fire" href="#">Fire</a>
+            </div>
+        </fieldset>
+        <fieldset>
+            <label>Noise 1</label>
+            <table width="100%">
+                <tr>
+                    <td>x step:</td>
+                    <td width="80%"><div class="slider" id="slider-noise1-xstep"></div></td>
+                </tr>
+                <tr>
+                    <td>y step:</td>
+                    <td width="80%"><div class="slider" id="slider-noise1-ystep"></div></td>
+                </tr>
+                <tr>
+                    <td>t step:</td>
+                    <td width="80%"><div class="slider" id="slider-noise1-tstep"></div></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <label>Noise 2</label>
+            <table width="100%">
+                <tr>
+                    <td>x step:</td>
+                    <td width="80%"><div class="slider" id="slider-noise2-xstep"></div></td>
+                </tr>
+                <tr>
+                    <td>y step:</td>
+                    <td width="80%"><div class="slider" id="slider-noise2-ystep"></div></td>
+                </tr>
+                <tr>
+                    <td>t step:</td>
+                    <td width="80%"><div class="slider" id="slider-noise2-tstep"></div></td>
+                </tr>
+            </table>
+        </fieldset>
+        <a class="button" id="hideButton" href="#">Hide boxes</a>
     </div>
     <div id="hint" class="box">
-        <h1>Hint</h1>
-        Most browsers allow to go fullscreen with some key press (such as
-        F11). Try it!
+        <fieldset>
+            <label>Hint</label>
+            <p>
+                Most browsers allow to go fullscreen with some key press (such as
+                F11). Try it!
+            </p>
+        </fieldset>
+        <fieldset>
+            <label>Hint</label>
+            <p>
+                 Increase x and y steps to get something more
+                "foggy" or decrease them to a more "liquid" thing.
+            </p>
+        </fieldset>
+        <fieldset>
+            <label>Hint</label>
+            <p>
+                Increase or decrease t steps to respectively accelerate
+                or slow down the noise fluctuations.
+            </p>
+        </fieldset>
+    </div>
+    <div id="credits" class="box">
+        This is an Open Source project by <a href="http://pepellou.info/" target="_blank">pepellou</a><br/>
+        <a id="githubLink" target="_blank" href="https://github.com/pepellou/PerlinsAlgorithmShowcase">See the project page at Github</a>
     </div>
     <script>
         window.requestAnimationFrame = window.requestAnimationFrame ||
@@ -111,6 +185,9 @@
 
         var min_opacity = 0.7;
         var max_opacity = 1;
+
+        var noise1 = { x_step: 8, y_step: 8, t_step: 128 };
+        var noise2 = { x_step: 2, y_step: 2, t_step: 64 };
 
         var simplex = new SimplexNoise(),
             canvas = document.getElementById('c'),
@@ -157,8 +234,14 @@
             requestAnimationFrame(function step() {
                 for (var x = 0; x < canvas.width; x++) {
                     for (var y = 0; y < canvas.height; y++) {
-                        var b = simplex.noise3D(x / 8, y / 8, t/128) * (max_opacity - min_opacity) + min_opacity;
-                        var g = simplex.noise3D(x / 2, y / 2, t/64) * (max_opacity - min_opacity) + min_opacity;
+                        var x1 = x / noise1.x_step;
+                        var y1 = y / noise1.y_step;
+                        var t1 = t / noise1.t_step;
+                        var x2 = x / noise2.x_step;
+                        var y2 = y / noise2.y_step;
+                        var t2 = t / noise2.t_step;
+                        var b = simplex.noise3D(x1, y1, t1) * (max_opacity - min_opacity) + min_opacity;
+                        var g = simplex.noise3D(x2, y2, t2) * (max_opacity - min_opacity) + min_opacity;
                         data[(x + y * canvas.width) * 4 + 3] = (b * g) * 255;
                     }
                 }
@@ -185,7 +268,7 @@
             $( "#slider-opacity" ).slider({
                 orientation: "horizontal",
                 range: true,
-                values: [ 70, 100 ],
+                values: [ 70, 90 ],
                 slide: function( event, ui ) {
                     setOpacityBounds(ui.values[0], ui.values[1]);
                 }
@@ -197,8 +280,44 @@
                 setTexture(predefined_textures[$(this).data('name')]);
             });
 
-            $('#hideButton').click(function () {
-                $('.box').fadeOut();
+            $('#hideButton').click(function () { $('.box').fadeOut(); });
+
+            $( "#slider-noise1-xstep" ).slider({
+                min: 1,
+                max: 100,
+                value: noise1.x_step,
+                slide: function( event, ui ) { noise1.x_step = ui.value; }
+            });
+            $( "#slider-noise1-ystep" ).slider({
+                min: 1,
+                max: 100,
+                value: noise1.y_step,
+                slide: function( event, ui ) { noise1.y_step = ui.value; }
+            });
+            $( "#slider-noise1-tstep" ).slider({
+                min: 1,
+                max: 100,
+                value: noise1.t_step,
+                slide: function( event, ui ) { noise1.t_step = ui.value; }
+            });
+
+            $( "#slider-noise2-xstep" ).slider({
+                min: 1,
+                max: 100,
+                value: noise2.x_step,
+                slide: function( event, ui ) { noise2.x_step = ui.value; }
+            });
+            $( "#slider-noise2-ystep" ).slider({
+                min: 1,
+                max: 100,
+                value: noise2.y_step,
+                slide: function( event, ui ) { noise2.y_step = ui.value; }
+            });
+            $( "#slider-noise2-tstep" ).slider({
+                min: 1,
+                max: 100,
+                value: noise2.t_step,
+                slide: function( event, ui ) { noise2.t_step = ui.value; }
             });
         });
     </script>
