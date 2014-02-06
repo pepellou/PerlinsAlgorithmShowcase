@@ -70,6 +70,9 @@
             background: none;
             border: 0;
         }
+        p {
+            margin: 12px 0;
+        }
     </style>
 </head>
 <body>
@@ -96,8 +99,8 @@
             <div class="slider" id="slider-opacity"></div>
             <div id="buttons">
                 Texture presets:
-                <a class="button texture" data-name="water" href="#">Water</a>
-                <a class="button texture" data-name="fire" href="#">Fire</a>
+                <p name="presets">
+                </p>
             </div>
         </fieldset>
         <fieldset>
@@ -163,22 +166,12 @@
         This is an Open Source project by <a href="http://pepellou.info/" target="_blank">pepellou</a><br/>
         <a id="githubLink" target="_blank" href="https://github.com/pepellou/PerlinsAlgorithmShowcase">See the project page at Github</a>
     </div>
+    <script src="presets.js"></script>
     <script>
         window.requestAnimationFrame = window.requestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.msRequestAnimationFrame;
-
-        var predefined_textures = {
-            water: {
-                bg: { r: 50, g: 100, b: 200 },
-                fg: { r: 7, g: 28, b: 10 }
-            },
-            fire: {
-                bg: { r: 255, g: 0, b: 0 },
-                fg: { r: 247, g: 228, b: 0 }
-            }
-        };
 
         var texture = predefined_textures.water;
 
@@ -227,6 +220,11 @@
         }
 
         $(function() {
+            for (var preset in predefined_textures) {
+                var link = '<a class="button texture" data-name="' + preset + '" href="#">' + preset + '</a>';
+                $('p[name="presets"]').append(link);
+            }
+
             paint_fg(texture.bg);
             paint_bg(texture.fg);
 
